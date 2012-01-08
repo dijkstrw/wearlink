@@ -1,3 +1,38 @@
 * Interface to SSOP-18
-** TC2030-STK 
+** TC2030-STK
    Microchip cables that translate to small footprint pads on a pcb.
+
+* Measurements of coat
+  Setup:
+  - 2.5mm female trs
+    T = yellow
+    R = red
+    S = blue
+  - 2.5mm male trs
+    T = yellow
+    R = white
+    S = blue
+** Resistance
+   Connect F 2.5mmTRS to male 2.5mm of coat
+   resistance between yellow/tip and blue/ground:
+   | key | resistance, Ohm |
+   |-----+-----------------|
+   | +   | 5.575 k         |
+   | >1  | 31.67 k         |
+   | 11< | 46.28 k         |
+   | 1<  | 19.96 k         |
+   | -   | 10.018 k        |
+** Current
+   Connect F 2.5mm TRS to male 2.5mm of coat
+   Connect F TRS to M TRS with fluke 8600A (uA) between yellow lines
+   Connect M TRS to coat widget
+   Connect coat widget to phone
+   | key | current in uA |
+   |-----+---------------|
+   | +   | 106           |
+   | >1  | 55.1          |
+   | 11< | 43.21         |
+   | 1<  | 70.12         |
+   | -   | 91.39         |
+** Voltage
+   using scope: voltage between yellow/tip and blue/sleeve was 3V but fluctuated +-200mV

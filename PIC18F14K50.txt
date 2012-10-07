@@ -1,0 +1,44 @@
+# tragesym input for PIC18F14K50
+#
+# goal: make a sym that has all the 44 pins, while looking like the normal 40
+# pins PDIP sym.
+
+[options]
+wordswap	yes
+rotate_labels	no
+generate_pinseq	yes
+sort_labels	no
+sym_width	2600
+
+[geda_attr]
+version	20110115
+name	PIC18F14K50
+device	PIC18F14K50
+refdes	U?
+footprint	PDIP-20,SSOP-20,SOIC-20
+description	20 pin USB Flash Microcontroller
+author	Willem Dijkstra <wpd@xs4all.nl>
+numslots	0
+
+[pins]
+# pinnr	seq	type	style	position	net	label
+1		pwr	line	l		VDD
+2		io	line	l		RA5 (OSC1)
+3		io	line	l		RA4 (OSC2)
+4		io	line	l		RA3 (MCLR)
+5		io	line	l		RC5
+6		io	line	l		RC4
+7		io	line	l		RC3
+8		io	line	l		RC6
+9		io	line	l		RC7 (SDO)
+10		io	line	l		RB7 (TX)
+20		pwr	line	r		VSS
+19		io	line	r		RA0 (D+/PGD)
+18		io	line	r		RA1 (D-/PGC)
+17		io	line	r		VUSB
+16		io	line	r		RC0
+15		io	line	r		RC1
+14		io	line	r		RC2
+13		io	line	r		RB4 (SDI)
+12		io	line	r		RB5 (RX)
+11		io	line	r		PB6 (SCK)

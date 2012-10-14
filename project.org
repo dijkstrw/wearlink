@@ -1,3 +1,4 @@
+
 * Interface to SSOP-18
 ** TC2030-STK
    Microchip cables that translate to small footprint pads on a pcb.
@@ -36,3 +37,13 @@
    | -   | 91.39         |
 ** Voltage
    using scope: voltage between yellow/tip and blue/sleeve was 3V but fluctuated +-200mV
+
+* Calculations
+  With Vcc at 5V, and a 25k resistor to each rail with the coat keys inbetween:
+  | Key     |    Rg |    Rv |    Rk | Ratio |
+  |---------+-------+-------+-------+-------|
+  | -       | 25000 | 25000 | 10000 |       |
+  | rev     | 25000 | 25000 | 20000 |       |
+  | play    | 25000 | 25000 | 46200 |       |
+  | forward | 25000 | 25000 | 31600 |       |
+  | plus    | 25000 | 25000 |  5600 |       |

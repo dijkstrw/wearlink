@@ -14,7 +14,7 @@
  Software License Agreement:
 
  The software supplied herewith by Microchip Technology Incorporated
- (the "Company") for its PIC® Microcontroller is intended and
+ (the "Company") for its PICï¿½ Microcontroller is intended and
  supplied to you, the Company's customer, for use solely and
  exclusively on Microchip PIC Microcontroller products. The
  software is owned by the Company and/or its supplier, and is
@@ -36,85 +36,6 @@
 #ifndef HARDWARE_PROFILE_H
 #define HARDWARE_PROFILE_H
 
-//#define DEMO_BOARD USER_DEFINED_BOARD
-
-#if !defined(DEMO_BOARD)
-    #if defined(__C32__)
-        #if defined(__32MX460F512L__)
-            #if defined(PIC32MX460F512L_PIM)		//If this is defined, it is saved in the project and can be found under: Project --> Build Options... --> Project --> MPLAB PIC32 C Compiler --> Preprocessor Macros
-                #include "HardwareProfile - PIC32MX460F512L PIM.h"
-            #elif defined(PIC32_USB_STARTER_KIT)	//If this is defined, it is saved in the project and can be found under: Project --> Build Options... --> Project --> MPLAB PIC32 C Compiler --> Preprocessor Macros
-                #include "HardwareProfile - PIC32 USB Starter Kit.h"
-            #endif
-        #elif defined(__32MX795F512L__)
-            #if defined(PIC32MX795F512L_PIM)
-                #include "HardwareProfile - PIC32MX795F512L PIM.h"
-            #elif defined(PIC32_USB_STARTER_KIT)
-                //PIC32 USB Starter Kit II
-                #include "HardwareProfile - PIC32 USB Starter Kit.h"
-            #endif
-        #endif
-    #endif
-
-    #if defined(__C30__) || defined __XC16__
-        #if defined(__PIC24FJ256GB110__)
-            #include "HardwareProfile - PIC24FJ256GB110 PIM.h"
-        #elif defined(__PIC24FJ256GB210__)
-            #include "HardwareProfile - PIC24FJ256GB210 PIM.h"
-        #elif defined(__PIC24FJ256GB106__)
-            #include "HardwareProfile - PIC24F Starter Kit.h"
-        #elif defined(__PIC24FJ64GB004__)
-            #include "HardwareProfile - PIC24FJ64GB004 PIM.h"
-        #elif defined(__PIC24FJ64GB502__)
-            #include "HardwareProfile - PIC24FJ64GB502 Microstick.h"
-        #elif defined(__PIC24FJ256DA210__)
-            #include "HardwareProfile - PIC24FJ256DA210 Development Board.h"
-        #elif defined(__dsPIC33EP512MU810__)
-            #if defined(DSPIC33EP512MU810_PIM)
-                #include "HardwareProfile - dsPIC33EP512MU810 PIM.h"
-            #elif defined(DSPIC33E_STARTER_KIT)
-                #include "HardwareProfile - dsPIC33E Starter Kit.h"
-            #endif
-        #elif defined(__PIC24EP512GU810__)
-            #if defined(PIC24EP512GU810_PIM)
-                #include "HardwareProfile - PIC24EP512GU810 PIM.h"
-            #endif
-        #endif
-    #endif
-
-    #if defined(__18CXX)
-        #if defined(__18F4550)
-            #include "HardwareProfile - PICDEM FSUSB.h"
-        #elif defined(__18F45K50)
-            #include "HardwareProfile - PICDEM FSUSB K50.h"
-        #elif defined(__18F87J50)
-            #include "HardwareProfile - PIC18F87J50 PIM.h"
-        #elif defined(__18F97J94)
-            #include "HardwareProfile - PIC18F97J94 PIM.h"
-        #elif defined(__18F87J94)
-            #include "HardwareProfile - PIC18F87J94 PIM.h"
-        #elif defined(__18F14K50)
-            #include "HardwareProfile - LPC USB Development Kit - PIC18F14K50.h"
-        #elif defined(__18F46J50)
-            #if defined(PIC18F_STARTER_KIT_1)
-                #include "HardwareProfile - PIC18F Starter Kit 1.h"
-            #else
-                #include "HardwareProfile - PIC18F46J50 PIM.h"
-            #endif
-        #elif defined(__18F47J53)
-            #include "HardwareProfile - PIC18F47J53 PIM.h"
-        #endif
-    #endif
-
-    #if defined(_PIC14E)
-        #if defined (_16F1459)
-    		#include "HardwareProfile - LPC USB Development Kit - PIC16F1459.h"
-        #endif
-    #endif
-#endif
-
-#if !defined(DEMO_BOARD)
-    #error "Demo board not defined.  Either define DEMO_BOARD for a custom board or select the correct processor for the demo board."
-#endif
+#include "HardwareProfile - LPC USB Development Kit - PIC18F14K50.h"
 
 #endif  //HARDWARE_PROFILE_H

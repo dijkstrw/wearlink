@@ -5,21 +5,6 @@
                    displayName="Header Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="Hardware Profiles" projectFiles="true">
-        <itemPath>../HardwareProfile - PIC18F Starter Kit 1.h</itemPath>
-        <itemPath>../HardwareProfile - PIC18F46J50 PIM.h</itemPath>
-        <itemPath>../HardwareProfile - PIC18F47J53 PIM.h</itemPath>
-        <itemPath>../HardwareProfile - PIC18F87J50 PIM.h</itemPath>
-        <itemPath>../HardwareProfile - PIC24F Starter Kit.h</itemPath>
-        <itemPath>../HardwareProfile - PIC24FJ256DA210 Development Board.h</itemPath>
-        <itemPath>../HardwareProfile - PIC24FJ256GB110 PIM.h</itemPath>
-        <itemPath>../HardwareProfile - PIC24FJ256GB210 PIM.h</itemPath>
-        <itemPath>../HardwareProfile - PIC24FJ64GB004 PIM.h</itemPath>
-        <itemPath>../HardwareProfile - PIC32 USB Starter Kit.h</itemPath>
-        <itemPath>../HardwareProfile - PIC32MX460F512L PIM.h</itemPath>
-        <itemPath>../HardwareProfile - PIC32MX795F512L PIM.h</itemPath>
-        <itemPath>../HardwareProfile - PICDEM FSUSB.h</itemPath>
-        <itemPath>../HardwareProfile - dsPIC33EP512MU810 PIM.h</itemPath>
-        <itemPath>../HardwareProfile - LPC USB Development Kit - PIC16F1459.h</itemPath>
         <itemPath>../HardwareProfile - LPC USB Development Kit - PIC18F14K50.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="USB" projectFiles="true">
@@ -166,7 +151,7 @@
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.end" value="0x3fff"/>
         <property key="memories.programmemory.start" value="0x0"/>
-        <property key="poweroptions.powerenable" value="true"/>
+        <property key="poweroptions.powerenable" value="false"/>
         <property key="programmertogo.imagename" value=""/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.pgmspeed" value="2"/>
@@ -179,51 +164,6 @@
         <property key="programoptions.uselvpprogramming" value="false"/>
         <property key="voltagevalue" value="5.0"/>
       </PICkit3PlatformTool>
-      <RealICEPlatformTool>
-        <property key="AutoSelectMemRanges" value="auto"/>
-        <property key="Freeze Peripherals" value="true"/>
-        <property key="RIExTrigs.Five" value="OFF"/>
-        <property key="RIExTrigs.Four" value="OFF"/>
-        <property key="RIExTrigs.One" value="OFF"/>
-        <property key="RIExTrigs.Seven" value="OFF"/>
-        <property key="RIExTrigs.Six" value="OFF"/>
-        <property key="RIExTrigs.Three" value="OFF"/>
-        <property key="RIExTrigs.Two" value="OFF"/>
-        <property key="RIExTrigs.Zero" value="OFF"/>
-        <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
-        <property key="ToolFirmwareFilePath"
-                  value="Press to browse for a specific firmware version"/>
-        <property key="ToolFirmwareOption.UseLatestFirmware" value="true"/>
-        <property key="debugoptions.useswbreakpoints" value="false"/>
-        <property key="hwtoolclock.frcindebug" value="false"/>
-        <property key="hwtoolclock.instructionspeed" value="4"/>
-        <property key="hwtoolclock.units" value="mips"/>
-        <property key="memories.aux" value="false"/>
-        <property key="memories.bootflash" value="true"/>
-        <property key="memories.configurationmemory" value="true"/>
-        <property key="memories.eeprom" value="true"/>
-        <property key="memories.flashdata" value="true"/>
-        <property key="memories.id" value="true"/>
-        <property key="memories.programmemory" value="true"/>
-        <property key="memories.programmemory.end" value="0x3fff"/>
-        <property key="memories.programmemory.start" value="0x0"/>
-        <property key="programoptions.eraseb4program" value="true"/>
-        <property key="programoptions.preserveeeprom" value="false"/>
-        <property key="programoptions.preserveprogramrange" value="false"/>
-        <property key="programoptions.preserveprogramrange.end" value="0x3fff"/>
-        <property key="programoptions.preserveprogramrange.start" value="0x0"/>
-        <property key="programoptions.preserveuserid" value="false"/>
-        <property key="programoptions.usehighvoltageonmclr" value="false"/>
-        <property key="programoptions.uselvpprogramming" value="false"/>
-        <property key="tracecontrol.disablemacros" value="false"/>
-        <property key="tracecontrol.medium" value="0"/>
-        <property key="tracecontrol.portselect" value="0"/>
-        <property key="tracecontrol.select" value="0"/>
-        <property key="tracecontrol.spiselect" value="0"/>
-        <property key="tracecontrol.tracebufmax" value="54600"/>
-        <property key="tracecontrol.tracefile" value="/root/mpdeftrace.log"/>
-        <property key="tracecontrol.tracefilemax" value="54600"/>
-      </RealICEPlatformTool>
     </conf>
   </confs>
 </configurationDescriptor>

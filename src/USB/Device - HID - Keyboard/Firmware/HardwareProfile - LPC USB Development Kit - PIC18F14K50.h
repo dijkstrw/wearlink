@@ -79,7 +79,7 @@
 
     //Uncomment the following line to make the output HEX of this 
     //  project work with the HID Bootloader
-    #define PROGRAMMABLE_WITH_USB_HID_BOOTLOADER	
+    // #define PROGRAMMABLE_WITH_USB_HID_BOOTLOADER
 
     /** Board definition ***********************************************/
     //These defintions will tell the main() function which board is

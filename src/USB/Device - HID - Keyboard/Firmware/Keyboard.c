@@ -12,7 +12,7 @@
  Software License Agreement:
 
  The software supplied herewith by Microchip Technology Incorporated
- (the "Company") for its PIC��������� Microcontroller is intended and
+ (the "Company") for its PIC Microcontroller is intended and
  supplied to you, the Company's customer, for use solely and
  exclusively on Microchip PIC Microcontroller products. The
  software is owned by the Company and/or its supplier, and is
@@ -53,7 +53,7 @@
 
 /** CONFIGURATION **************************************************/
 #pragma config CPUDIV = NOCLKDIV
-#pragma config USBDIV = ON
+#pragma config USBDIV = OFF
 #pragma config FOSC   = HS
 #pragma config PLLEN  = ON
 #pragma config PWRTEN = OFF
@@ -63,7 +63,7 @@
 #pragma config BORV   = 30
 #pragma config WDTEN  = OFF
 #pragma config WDTPS  = 32768
-#pragma config MCLRE  = OFF
+#pragma config MCLRE  = ON
 #pragma config HFOFST = OFF
 #pragma config STVREN = ON
 #pragma config LVP    = OFF
@@ -251,8 +251,6 @@ void main(void)
 
     while(1)
     {
-        PORTBbits.RB7 ^= 1;
-
     #if defined(USB_POLLING)
 		// Check bus status and service USB interrupts.
         USBDeviceTasks(); // Interrupt or polling method.  If using polling, must call

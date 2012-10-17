@@ -662,7 +662,7 @@ void USBDeviceTasks(void)
 #endif
 {
     BYTE i;
-
+   
 #ifdef USB_SUPPORT_OTG
     //SRP Time Out Check
     if (USBOTGSRPIsReady())

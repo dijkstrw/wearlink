@@ -12,7 +12,7 @@
  Software License Agreement:
 
  The software supplied herewith by Microchip Technology Incorporated
- (the "Company") for its PIC� Microcontroller is intended and
+ (the "Company") for its PIC��������� Microcontroller is intended and
  supplied to you, the Company's customer, for use solely and
  exclusively on Microchip PIC Microcontroller products. The
  software is owned by the Company and/or its supplier, and is
@@ -56,9 +56,9 @@
 #pragma config USBDIV = ON
 #pragma config FOSC   = HS
 #pragma config PLLEN  = ON
+#pragma config PWRTEN = OFF
 #pragma config FCMEN  = OFF
 #pragma config IESO   = OFF
-#pragma config PWRTEN = OFF
 #pragma config BOREN  = OFF
 #pragma config BORV   = 30
 #pragma config WDTEN  = OFF
@@ -78,7 +78,7 @@
 #pragma config WRTC   = OFF
 #pragma config EBTR0  = OFF
 #pragma config EBTR1  = OFF
-#pragma config EBTRB  = OFF        
+#pragma config EBTRB  = OFF
 
 /** VARIABLES ******************************************************/
 //The ReceivedDataBuffer[] and ToSendDataBuffer[] arrays are used as
@@ -243,13 +243,17 @@ void main(void)
 {
     InitializeSystem();
 
+    TRISBbits.RB7 = 0;
+
     #if defined(USB_INTERRUPT)
         USBDeviceAttach();
     #endif
 
     while(1)
     {
-        #if defined(USB_POLLING)
+        PORTBbits.RB7 ^= 1;
+
+    #if defined(USB_POLLING)
 		// Check bus status and service USB interrupts.
         USBDeviceTasks(); // Interrupt or polling method.  If using polling, must call
         				  // this function periodically.  This function will take care
@@ -295,152 +299,9 @@ void main(void)
  *******************************************************************/
 static void InitializeSystem(void)
 {
-    #if (defined(__18CXX) & !defined(PIC18F87J50_PIM) & !defined(PIC18F97J94_FAMILY))
+    #if (defined(__18CXX))
         ADCON1 |= 0x0F;                 // Default all pins to digital
-    #elif defined(__C30__) || defined __XC16__
-        #if defined(__PIC24FJ256GB110__) || defined(__PIC24FJ256GB106__)
-            AD1PCFGL = 0xFFFF;
-         #elif defined(__dsPIC33EP512MU810__)||defined(__PIC24EP512GU810__)
-        	ANSELA = 0x0000;
-    		ANSELB = 0x0000;
-    		ANSELC = 0x0000;
-    		ANSELD = 0x0000;
-    		ANSELE = 0x0000;
-    		ANSELG = 0x0000;
-            
-            // The dsPIC33EP512MU810 features Peripheral Pin
-            // select. The following statements map UART2 to 
-            // device pins which would connect to the the 
-            // RX232 transciever on the Explorer 16 board.
-
-             RPINR19 = 0;
-             RPINR19 = 0x64;
-             RPOR9bits.RP101R = 0x3;
-
-        #endif
-    #elif defined(__C32__)
-        AD1PCFG = 0xFFFF;
     #endif
-
-    #if defined(PIC18F87J50_PIM) || defined(PIC18F46J50_PIM) || defined(PIC18F_STARTER_KIT_1) || defined(PIC18F47J53_PIM)
-    	//On the PIC18F87J50 Family of USB microcontrollers, the PLL will not power up and be enabled
-    	//by default, even if a PLL enabled oscillator configuration is selected (such as HS+PLL).
-    	//This allows the device to power up at a lower initial operating frequency, which can be
-    	//advantageous when powered from a source which is not gauranteed to be adequate for 48MHz
-    	//operation.  On these devices, user firmware needs to manually set the OSCTUNE<PLLEN> bit to
-    	//power up the PLL.
-        {
-            unsigned int pll_startup_counter = 600;
-            OSCTUNEbits.PLLEN = 1;  //Enable the PLL and wait 2+ms until the PLL locks before enabling USB module
-            while(pll_startup_counter--);
-        }
-        //Device switches over automatically to PLL output after PLL is locked and ready.
-    #endif
-
-    #if defined(PIC18F87J50_PIM)
-    	//Configure all I/O pins to use digital input buffers.  The PIC18F87J50 Family devices
-    	//use the ANCONx registers to control this, which is different from other devices which
-    	//use the ADCON1 register for this purpose.
-        WDTCONbits.ADSHR = 1;			// Select alternate SFR location to access ANCONx registers
-        ANCON0 = 0xFF;                  // Default all pins to digital
-        ANCON1 = 0xFF;                  // Default all pins to digital
-        WDTCONbits.ADSHR = 0;			// Select normal SFR locations
-    #endif
-
-    #if defined(PIC18F97J94_FAMILY)
-        //Configure I/O pins for digital input mode.
-        ANCON1 = 0xFF;
-        ANCON2 = 0xFF;
-        ANCON3 = 0xFF;
-        #if(USB_SPEED_OPTION == USB_FULL_SPEED)
-            //Enable INTOSC active clock tuning if full speed
-            OSCCON5 = 0x90; //Enable active clock self tuning for USB operation
-            while(OSCCON2bits.LOCK == 0);   //Make sure PLL is locked/frequency is compatible
-                                            //with USB operation (ex: if using two speed 
-                                            //startup or otherwise performing clock switching)
-        #endif
-    #endif
-    
-    #if defined(PIC18F45K50_FAMILY)
-        //Configure oscillator settings for clock settings compatible with USB 
-        //operation.  Note: Proper settings depends on USB speed (full or low).
-        #if(USB_SPEED_OPTION == USB_FULL_SPEED)
-            OSCTUNE = 0x80; //3X PLL ratio mode selected
-            OSCCON = 0x70;  //Switch to 16MHz HFINTOSC
-            OSCCON2 = 0x10; //Enable PLL, SOSC, PRI OSC drivers turned off
-            while(OSCCON2bits.PLLRDY != 1);   //Wait for PLL lock
-            *((unsigned char*)0xFB5) = 0x90;  //Enable active clock tuning for USB operation
-        #endif
-    #endif
-
-    #if defined(PIC18F46J50_PIM) || defined(PIC18F_STARTER_KIT_1) || defined(PIC18F47J53_PIM)
-	//Configure all I/O pins to use digital input buffers.  The PIC18F87J50 Family devices
-	//use the ANCONx registers to control this, which is different from other devices which
-	//use the ADCON1 register for this purpose.
-    ANCON0 = 0x7F;                  // All pins to digital except AN7 (temp sensor)
-    ANCON1 = 0xBF;                  // Default all pins to digital.  Bandgap on.
-    #endif
-    
-   #if defined(PIC24FJ64GB004_PIM) || defined(PIC24FJ256DA210_DEV_BOARD)
-	//On the PIC24FJ64GB004 Family of USB microcontrollers, the PLL will not power up and be enabled
-	//by default, even if a PLL enabled oscillator configuration is selected (such as HS+PLL).
-	//This allows the device to power up at a lower initial operating frequency, which can be
-	//advantageous when powered from a source which is not gauranteed to be adequate for 32MHz
-	//operation.  On these devices, user firmware needs to manually set the CLKDIV<PLLEN> bit to
-	//power up the PLL.
-    {
-        unsigned int pll_startup_counter = 600;
-        CLKDIVbits.PLLEN = 1;
-        while(pll_startup_counter--);
-    }
-
-    //Device switches over automatically to PLL output after PLL is locked and ready.
-    #endif
-    
-    #if defined(__32MX460F512L__)|| defined(__32MX795F512L__)
-    // Configure the PIC32 core for the best performance
-    // at the operating frequency. The operating frequency is already set to 
-    // 60MHz through Device Config Registers
-    SYSTEMConfigPerformance(60000000);
-	#endif
-
-#if defined(__dsPIC33EP512MU810__)||defined(__PIC24EP512GU810__)
-
-    // Configure the device PLL to obtain 60 MIPS operation. The crystal
-    // frequency is 8MHz. Divide 8MHz by 2, multiply by 60 and divide by
-    // 2. This results in Fosc of 120MHz. The CPU clock frequency is
-    // Fcy = Fosc/2 = 60MHz. Wait for the Primary PLL to lock and then
-    // configure the auxilliary PLL to provide 48MHz needed for USB 
-    // Operation.
-
-	PLLFBD = 58;				/* M  = 60	*/
-	CLKDIVbits.PLLPOST = 0;		/* N1 = 2	*/
-	CLKDIVbits.PLLPRE = 0;		/* N2 = 2	*/
-	OSCTUN = 0;			
-
-    /*	Initiate Clock Switch to Primary
-     *	Oscillator with PLL (NOSC= 0x3)*/
-	
-    __builtin_write_OSCCONH(0x03);		
-	__builtin_write_OSCCONL(0x01);
-	
-	while (OSCCONbits.COSC != 0x3);       
-
-    // Configuring the auxiliary PLL, since the primary
-    // oscillator provides the source clock to the auxiliary
-    // PLL, the auxiliary oscillator is disabled. Note that
-    // the AUX PLL is enabled. The input 8MHz clock is divided
-    // by 2, multiplied by 24 and then divided by 2. Wait till 
-    // the AUX PLL locks.
-
-    ACLKCON3 = 0x24C1;   
-    ACLKDIV3 = 0x7;
-    
-    ACLKCON3bits.ENAPLL = 1;
-    while(ACLKCON3bits.APLLCK != 1); 
-
-    #endif
-
 
 //	The USB specifications require that USB peripheral devices must never source
 //	current onto the Vbus pin.  Additionally, USB peripherals should not source
@@ -659,11 +520,7 @@ void USBCBSuspend(void)
         //Note: The clock switching code needed is processor specific, as the 
         //clock trees and registers aren't identical accross all PIC18 USB device
         //families.
-    	#if defined(PIC18F97J94_FAMILY)
-            OSCCON = 0x06;  //FRC / 16 = 500kHz selected.
-    	#else
-        	OSCCON = 0x13;	//Sleep on sleep, 125kHz selected as microcontroller clock source
-    	#endif
+        //        	OSCCON = 0x13;	//Sleep on sleep, 125kHz selected as microcontroller clock source
 	#endif
 
 	//IMPORTANT NOTE: Do not clear the USBActivityIF (ACTVIF) bit here.  This bit is 
@@ -710,15 +567,7 @@ void USBCBWakeFromSuspend(void)
 	//Previous clock source was something low frequency as set in the 
 	//USBCBSuspend() function.
 	#if defined(__18CXX)
-        #if defined(PIC18F97J94_FAMILY)
-            OSCCON3 = 0x01; //8MHz FRC / 2 = 4MHz output
-            OSCCON = 0x01;  //FRC with PLL selected 
-            while(OSCCON2bits.LOCK == 0);   //Wait for PLL lock       
-    	#elif defined(PIC18F45K50_FAMILY)
-            OSCCON = 0x70;  //Switch to 16MHz HFINTOSC (+ PLL)
-            while(OSCCON2bits.PLLRDY != 1);   //Wait for PLL lock
-        #else
-        	OSCCON = 0x60;		//Primary clock source selected.
+        	OSCCON = 0x00;		//Primary clock source selected.
             //Adding a software start up delay will ensure
             //that the primary oscillator and PLL are running before executing any other
             //code.  If the PLL isn't being used, (ex: primary osc = 48MHz externally applied EC)
@@ -727,7 +576,6 @@ void USBCBWakeFromSuspend(void)
                 unsigned int pll_startup_counter = 800;	//Long delay at 31kHz, but ~0.8ms at 48MHz
                 while(pll_startup_counter--);			//Clock will switch over while executing this delay loop
             }
-        #endif
 	#endif		
 }
 

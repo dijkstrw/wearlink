@@ -39,11 +39,18 @@
    using scope: voltage between yellow/tip and blue/sleeve was 3V but fluctuated +-200mV
 
 * Calculations
+  Determine the adc register value at a $Vcc, an $bits bit ADC, into an $rbits
+  bit ADC register. The ADC is connected between the fibretronic buttons and a
+  $Rl that tied to the Vcc supply.
+
   With Vcc at 5V, and a 25k resistor to each rail with the coat keys inbetween:
-  | Key     |    Rg |    Rv |    Rk | Ratio |
-  |---------+-------+-------+-------+-------|
-  | -       | 25000 | 25000 | 10000 |       |
-  | rev     | 25000 | 25000 | 20000 |       |
-  | play    | 25000 | 25000 | 46200 |       |
-  | forward | 25000 | 25000 | 31600 |       |
-  | plus    | 25000 | 25000 |  5600 |       |
+  | ! | Key     |       Rk |  Vadc |     Adc | Register |
+  |---+---------+----------+-------+---------+----------|
+  | # | none    |        0 | 5.000 |    1024 |      256 |
+  | # | rev     |    20000 | 2.619 |     536 |      134 |
+  | # | play    |    46200 | 1.613 |     330 |       82 |
+  | # | forward |    31600 | 2.052 |     420 |      105 |
+  | # | plus    |     5600 | 3.986 |     816 |      204 |
+  |---+---------+----------+-------+---------+----------|
+  | $ |         | Rl=22000 | Vcc=5 | bits=10 |  rbits=8 |
+  #+TBLFM: $4=$Vcc-($Rk/($Rl+$Rk))*$Vcc;%.3f::$5=$Vadc/($Vcc/2^$bits);%.0f::$6=$Adc/(2^($bits-$rbits));%.0f

@@ -1,0 +1,32 @@
+# tragesym input for PIC18F14K50
+#
+# goal: make a sym that has all the 44 pins, while looking like the normal 40
+# pins PDIP sym.
+
+[options]
+wordswap	yes
+rotate_labels	no
+generate_pinseq	yes
+sort_labels	no
+sym_width	2600
+
+[geda_attr]
+version	20110115
+name	ATTINY85
+device	ATTINY85
+refdes	U?
+footprint	PDIP-8,SOIC-8,TSSOP-8
+description	Flash Microcontroller
+author	Willem Dijkstra <wpd@xs4all.nl>
+numslots	0
+
+[pins]
+# pinnr	seq	type	style	position	net	label
+4		pwr	line	l		GND
+8		pwr	line	l		VCC
+1		io	line	r		PB5 (RESET/DW)
+3		io	line	r		PB4 (PCINT4/ADC2)
+2		io	line	r		PB3
+7		io	line	r		PB2 (SCK/INT0)
+6		io	line	r		PB1 (MISO)
+5		io	line	r		PB0 (MOSI)

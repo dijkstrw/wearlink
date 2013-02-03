@@ -65,8 +65,8 @@ Description:
  Software License Agreement:
 
  The software supplied herewith by Microchip Technology Incorporated
- (the “Company”) for its PIC® Microcontroller is intended and
- supplied to you, the Company’s customer, for use solely and
+ (the ï¿½Companyï¿½) for its PICï¿½ Microcontroller is intended and
+ supplied to you, the Companyï¿½s customer, for use solely and
  exclusively on Microchip PIC Microcontroller products. The
  software is owned by the Company and/or its supplier, and is
  protected under applicable copyright laws. All rights are reserved.
@@ -75,7 +75,7 @@ Description:
  civil liability for the breach of the terms and conditions of this
  license.
 
- THIS SOFTWARE IS PROVIDED IN AN “AS IS” CONDITION. NO WARRANTIES,
+ THIS SOFTWARE IS PROVIDED IN AN ï¿½AS ISï¿½ CONDITION. NO WARRANTIES,
  WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
  TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
  PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. THE COMPANY SHALL NOT,
@@ -265,15 +265,6 @@ Description:
 #define BDT_BASE_ADDR_TAG   __attribute__ ((aligned (512)))
 #define CTRL_TRF_SETUP_ADDR_TAG
 #define CTRL_TRF_DATA_ADDR_TAG
-
-//----- Depricated defintions - will be removed at some point of time----------
-//--------- Depricated in v2.2
-#define _LS         0x00            // Use Low-Speed USB Mode
-#define _FS         0x04            // Use Full-Speed USB Mode
-#define _TRINT      0x00            // Use internal transceiver
-#define _TREXT      0x08            // Use external transceiver
-#define _PUEN       0x10            // Use internal pull-up resistor
-#define _OEMON      0x40            // Use SIE output indicator
 
 /*****************************************************************************/
 /****** Type definitions *****************************************************/

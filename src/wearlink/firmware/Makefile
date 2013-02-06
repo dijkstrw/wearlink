@@ -55,7 +55,8 @@ main.bin:	$(OBJECTS)
 main.hex:	main.bin
 	rm -f main.hex main.eep.hex
 	avr-objcopy -j .text -j .data -O ihex main.bin main.hex
-	./checksize main.bin 4096 256
+	./checksize main.bin 8096 256
+#	./checksize main.bin 4096 256
 
 main.lst:	main.bin
 	 avr-objdump -h -S $< > $@

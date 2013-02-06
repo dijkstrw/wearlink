@@ -21,14 +21,13 @@
 /*
 Pin assignment:
 PB1 = key input (active low with pull-up)
-PB3 = analog input (ADC3)
-PB4 = LED output (active high)
+PB4 = analog input (ADC2)
 
 PB0, PB2 = USB data lines
 */
 
-#define BIT_LED 4
-#define BIT_KEY 1
+#define BIT_LED 3
+//#define BIT_KEY 1
 
 
 #define UTIL_BIN4(x)        (uchar)((0##x & 01000)/64 + (0##x & 0100)/16 + (0##x & 010)/4 + (0##x & 1))
@@ -115,6 +114,8 @@ uchar   key = 0;
     }
     reportBuffer[0] = 0;    /* no modifiers */
     reportBuffer[1] = key;
+
+    PORTB ^= 1 << BIT_LED;
 }
 
 static void evaluateADC(unsigned int value)
@@ -156,7 +157,7 @@ static uchar timerCnt;
             timerCnt = 0;
             adcPending = 1;
             ADCSRA |= (1 << ADSC);  /* start next conversion */
-            PORTB ^= 1 << BIT_LED;
+//            PORTB ^= 1 << BIT_LED;
         }
     }
 }
@@ -170,7 +171,7 @@ static void timerInit(void)
 
 static void adcInit(void)
 {
-    ADMUX = UTIL_BIN8(1001, 0011);  /* Vref=2.56V, measure ADC0 */
+    ADMUX = _BV(MUX1); /* Vref=Vcc, no AREF, no left right adjust, measure ADC2 */
     ADCSRA = UTIL_BIN8(1000, 0111); /* enable ADC, not free running, interrupt disable, rate = 1/128 */
 }
 
@@ -285,12 +286,13 @@ uchar   calibrationValue;
         _delay_ms(15);
     }
     usbDeviceConnect();
-    DDRB |= 1 << BIT_LED;   /* output for LED */
-    PORTB |= 1 << BIT_KEY;  /* pull-up on key input */
     wdt_enable(WDTO_1S);
     timerInit();
     adcInit();
     usbInit();
+
+    DDRB |= _BV(BIT_LED);
+
     sei();
     for(;;){    /* main event loop */
         wdt_reset();

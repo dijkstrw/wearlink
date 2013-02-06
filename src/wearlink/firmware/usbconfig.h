@@ -169,7 +169,7 @@ extern void usbEventResetReady(void);
 /* See USB specification if you want to conform to an existing device class or
  * protocol.
  */
-#define USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH    35  /* total length of report descriptor */
+#define USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH    37  /* total length of report descriptor */
 /* Define this to the length of the HID report descriptor, if you implement
  * an HID device. Otherwise don't define it or define it to 0.
  * Since this template defines a HID device, it must also specify a HID

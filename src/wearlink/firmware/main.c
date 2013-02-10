@@ -19,21 +19,14 @@
 #include "oddebug.h"
 
 /*
-Pin assignment:
-PB4 = analog input (ADC2)
-PB0, PB2 = USB data lines
+ * Pin assignment:
+ * PB4 = analog input (ADC2)
+ * PB0, PB2 = USB data lines
 */
 
-#define BIT_LED 3
-
-#define UTIL_BIN4(x)        (uchar)((0##x & 01000)/64 + (0##x & 0100)/16 + (0##x & 010)/4 + (0##x & 1))
-#define UTIL_BIN8(hi, lo)   (uchar)(UTIL_BIN4(hi) * 16 + UTIL_BIN4(lo))
-
-static uchar    reportBuffer[2];    /* buffer for HID reports */
+static uchar    reportBuffer[1];    /* buffer for HID reports */
 static uchar    idleRate;           /* in 4 ms units */
-
 static uchar    adcPending;
-
 static uchar    mmKey;
 
 const PROGMEM char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] = { /* USB report descriptor */
@@ -50,18 +43,10 @@ const PROGMEM char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] 
     0x29, 0xff,                    //   USAGE_MAXIMUM (0xff)
     0x81, 0x00,                    //   INPUT (Data, Array); Media Keys
 
-    0x95, 0x01,                    //   REPORT_COUNT (1)
-    0x75, 0x08,                    //   REPORT_SIZE (8)
-    0x05, 0x07,                    //   USAGE_PAGE (Keyboard)
-    0x25, 0x65,                    //   LOGICAL_MAXIMUM (101)
-    0x19, 0x00,                    //   USAGE_MINIMUM (Reserved (no event indicated))
-    0x29, 0x65,                    //   USAGE_MAXIMUM (Keyboard Application)
-    0x81, 0x00,                    //   INPUT (Data,Ary,Abs)
     0xc0                           // END_COLLECTION
 };
-/* We use a simplifed keyboard report descriptor with 2 entries: one for
- * multimedia keys, and one for normal keys. We do not support modifiers or
- * status leds.
+/* We use a simplifed keyboard report descriptor with 1 entry for multimedia
+ * keys. We do not support modifiers, status leds or normal keys.
  */
 
 /*
@@ -70,7 +55,7 @@ const PROGMEM char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] 
    resistive divider at the ADC node. This table calculates the expected ADC
    measurement given the known resistance and an expected deviation of +-9%.
 
-   #+ORGTBL: SEND keymarks orgtbl-to-generic :lstart "{ " :lend " }," :sep ", " :skip 2 :skipcols (3 4 5 6)
+   #+ORGTBL: SEND keymarks orgtbl-to-generic :lstart "   { " :lend " }," :sep ", " :skip 2 :skipcols (3 4 5 6)
    | ! | Key           |       Rk |  Vadc |     Adc | Adc 8bit |    A-D% | A+D% |
    |---+---------------+----------+-------+---------+----------+---------+------|
    | # | KEY_NONE      | 10000000 | 4.990 |    1022 |      256 |     233 |  255 |
@@ -104,36 +89,20 @@ struct keymark {
 
 const struct keymark keymark[NUMKEYS] = {
 /* BEGIN RECEIVE ORGTBL keymarks */
-{ KEY_NONE, 233, 255 },
-{ KEY_VOLUMEDEC, 77, 93 },
-{ KEY_REWIND, 116, 140 },
-{ KEY_PLAY, 163, 195 },
-{ KEY_FORWARD, 143, 171 },
-{ KEY_VOLUMEINC, 51, 61 },
+   { KEY_NONE, 233, 255 },
+   { KEY_VOLUMEDEC, 77, 93 },
+   { KEY_REWIND, 116, 140 },
+   { KEY_PLAY, 163, 195 },
+   { KEY_FORWARD, 143, 171 },
+   { KEY_VOLUMEINC, 51, 61 },
 /* END RECEIVE ORGTBL keymarks */
 };
-
-
-#define KEY_1       30
-#define KEY_2       31
-#define KEY_3       32
-#define KEY_4       33
-#define KEY_5       34
-#define KEY_6       35
-#define KEY_7       36
-#define KEY_8       37
-#define KEY_9       38
-#define KEY_0       39
-#define KEY_RETURN  40
 
 /* ------------------------------------------------------------------------- */
 
 static void buildReport(void)
 {
     reportBuffer[0] = mmKey;
-    reportBuffer[1] = 0;
-
-    PORTB ^= 1 << BIT_LED;
 }
 
 static void evaluateADC(unsigned int value)
@@ -151,7 +120,7 @@ static void evaluateADC(unsigned int value)
 
 static void adcPoll(void)
 {
-    if(adcPending && !(ADCSRA & (1 << ADSC))){
+    if(adcPending && !(ADCSRA & _BV(ADSC))){
         adcPending = 0;
         evaluateADC(ADC);
     }
@@ -161,26 +130,28 @@ static void timerPoll(void)
 {
     static uchar timerCnt;
 
-    if(TIFR & (1 << TOV1)){
-        TIFR = (1 << TOV1); /* clear overflow */
+    if(TIFR & _BV(TOV1)){
+        TIFR = _BV(TOV1); /* clear overflow */
         if(++timerCnt >= 63){       /* ~ 1 second interval */
             timerCnt = 0;
             adcPending = 1;
-            ADCSRA |= (1 << ADSC);  /* start next conversion */
-//            PORTB ^= 1 << BIT_LED;
+            ADCSRA |= _BV(ADSC);  /* start next conversion */
         }
     }
 }
 
 static void timerInit(void)
 {
-    TCCR1 = 0x0b;           /* select clock: 16.5M/1k -> overflow rate = 16.5M/256k = 62.94 Hz */
+    /* Select prescale as 1k; overflow rate is then 16M5 / (1k * 256) = 64.45 Hz */
+    TCCR1 = _BV(CS13) | _BV(CS11) | _BV(CS10);
 }
 
 static void adcInit(void)
 {
-    ADMUX = _BV(MUX1);              /* Vref=Vcc, no AREF, no left right adjust, measure ADC2 */
-    ADCSRA = UTIL_BIN8(1000, 0111); /* enable ADC, not free running, interrupt disable, rate = 1/128 */
+    /* Vref=Vcc, no AREF, no left right adjust, measure ADC2 */
+    ADMUX = _BV(MUX1);
+    /* Enable ADC, no interrupt, no free run, prescale = clock/128 */
+    ADCSRA = _BV(ADEN) | _BV(ADPS2) | _BV(ADPS1) | _BV(ADPS0);
 }
 
 uchar	usbFunctionSetup(uchar data[8])
@@ -281,8 +252,6 @@ int main(void)
     timerInit();
     adcInit();
     usbInit();
-
-    DDRB |= _BV(BIT_LED);
 
     sei();
     for (;;){    /* main event loop */

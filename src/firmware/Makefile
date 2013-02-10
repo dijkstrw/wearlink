@@ -43,7 +43,7 @@ readcal:
 	$(AVRDUDE) -U calibration:r:/dev/stdout:i | head -1
 
 clean:
-	rm -f main.hex main.lst main.obj main.cof main.list main.map main.eep.hex main.bin *.o usbdrv/*.o main.s usbdrv/oddebug.s usbdrv/usbdrv.s
+	rm -f main.hex main.lst main.def main.obj main.cof main.list main.map main.eep.hex main.bin *.o usbdrv/*.o main.s usbdrv/oddebug.s usbdrv/usbdrv.s
 
 main.bin: $(OBJECTS)
 	$(COMPILE) -o main.bin $(OBJECTS)

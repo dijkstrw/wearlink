@@ -1,11 +1,11 @@
-/* Name: main.c
- * Project: EasyLogger
- * Author: Christian Starkjohann
- * Creation Date: 2006-04-23
- * Tabsize: 4
- * Copyright: (c) 2006 by OBJECTIVE DEVELOPMENT Software GmbH
- * License: Proprietary, free under certain conditions. See Documentation.
- * This Revision: $Id$
+/*
+ * Wearlink
+ *
+ * A fibretronic keypad to usb multimedia key code translator
+ *
+ * (c) 2013 Willem Dijkstra
+ *
+ * Based V-USB "EasyLogger", (c) 2006 OBJECTIVE DEVELOPMENT Software GmbH.
  */
 
 #include <avr/io.h>
@@ -20,24 +20,14 @@
 
 /*
 Pin assignment:
-PB1 = key input (active low with pull-up)
 PB4 = analog input (ADC2)
-
 PB0, PB2 = USB data lines
 */
 
 #define BIT_LED 3
-//#define BIT_KEY 1
-
 
 #define UTIL_BIN4(x)        (uchar)((0##x & 01000)/64 + (0##x & 0100)/16 + (0##x & 010)/4 + (0##x & 1))
 #define UTIL_BIN8(hi, lo)   (uchar)(UTIL_BIN4(hi) * 16 + UTIL_BIN4(lo))
-
-#ifndef NULL
-#define NULL    ((void *)0)
-#endif
-
-/* ------------------------------------------------------------------------- */
 
 static uchar    reportBuffer[2];    /* buffer for HID reports */
 static uchar    idleRate;           /* in 4 ms units */
@@ -45,11 +35,6 @@ static uchar    idleRate;           /* in 4 ms units */
 static uchar    adcPending;
 
 static uchar    mmKey;
-
-static uchar    valueBuffer[16];
-static uchar    *nextDigit;
-
-/* ------------------------------------------------------------------------- */
 
 const PROGMEM char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] = { /* USB report descriptor */
     0x05, 0x01,                    // USAGE_PAGE (Generic Desktop)
@@ -74,31 +59,60 @@ const PROGMEM char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] 
     0x81, 0x00,                    //   INPUT (Data,Ary,Abs)
     0xc0                           // END_COLLECTION
 };
-/* We use a simplifed keyboard report descriptor which does not support the
- * boot protocol. We don't allow setting status LEDs and we only allow one
- * simultaneous key press (except modifiers). We can therefore use short
- * 2 byte input reports.
- * The report descriptor has been created with usb.org's "HID Descriptor Tool"
- * which can be downloaded from http://www.usb.org/developers/hidpage/.
- * Redundant entries (such as LOGICAL_MINIMUM and USAGE_PAGE) have been omitted
- * for the second INPUT item.
+/* We use a simplifed keyboard report descriptor with 2 entries: one for
+ * multimedia keys, and one for normal keys. We do not support modifiers or
+ * status leds.
  */
 
+/*
+   Vcc is tied to the ADC pin using a 20k resistor. From there we connect to
+   the coat keys and finally to ground. The different coat keys make a
+   resistive divider at the ADC node. This table calculates the expected ADC
+   measurement given the known resistance and an expected deviation of +-9%.
 
-#define MARK_MINUS          704
-#define MARK_REVERSE        536
-#define MARK_PLAY           330
-#define MARK_FORWARD        420
-#define MARK_PLUS           816
+   #+ORGTBL: SEND keymarks orgtbl-to-generic :lstart "{ " :lend " }," :sep ", " :skip 2 :skipcols (3 4 5 6)
+   | ! | Key           |       Rk |  Vadc |     Adc | Adc 8bit |    A-D% | A+D% |
+   |---+---------------+----------+-------+---------+----------+---------+------|
+   | # | KEY_NONE      | 10000000 | 4.990 |    1022 |      256 |     233 |  255 |
+   | # | KEY_VOLUMEDEC |    10000 | 1.667 |     341 |       85 |      77 |   93 |
+   | # | KEY_REWIND    |    20000 | 2.500 |     512 |      128 |     116 |  140 |
+   | # | KEY_PLAY      |    46200 | 3.489 |     715 |      179 |     163 |  195 |
+   | # | KEY_FORWARD   |    31600 | 3.062 |     627 |      157 |     143 |  171 |
+   | # | KEY_VOLUMEINC |     5600 | 1.094 |     224 |       56 |      51 |   61 |
+   |---+---------------+----------+-------+---------+----------+---------+------|
+   | $ |               | Rl=20000 | Vcc=5 | bits=10 |  rbits=8 | dev=.09 |      |
+   #+TBLFM: $4=$Vcc-($Rl/($Rk+$Rl))*$Vcc;%.3f::$5=$Vadc/($Vcc/2^$bits);%.0f::$6=$Adc/(2^($bits-$rbits));%.0f::$7=max($6-($dev*$6),0);%.0f::$8=min($6+($dev*$6),255);%0.f
+*/
 
 /* Codes to mark multimedia key presses, see usb.org's HID-usage-tables
  * document, chapter 15.
  */
+#define KEY_NONE            0x00
 #define KEY_VOLUMEINC       0xe9
 #define KEY_VOLUMEDEC       0xea
 #define KEY_REWIND          0xb4
 #define KEY_FORWARD         0xb3
 #define KEY_PLAY            0xb0
+
+#define NUMKEYS             6
+
+struct keymark {
+    uchar key;
+    uchar low;
+    uchar high;
+};
+
+const struct keymark keymark[NUMKEYS] = {
+/* BEGIN RECEIVE ORGTBL keymarks */
+{ KEY_NONE, 233, 255 },
+{ KEY_VOLUMEDEC, 77, 93 },
+{ KEY_REWIND, 116, 140 },
+{ KEY_PLAY, 163, 195 },
+{ KEY_FORWARD, 143, 171 },
+{ KEY_VOLUMEINC, 51, 61 },
+/* END RECEIVE ORGTBL keymarks */
+};
+
 
 #define KEY_1       30
 #define KEY_2       31
@@ -116,54 +130,22 @@ const PROGMEM char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] 
 
 static void buildReport(void)
 {
-    uchar   key = 0;
-
-    if (nextDigit != NULL){
-        key = *nextDigit;
-    }
-
-    if (mmKey != 0) {
-        reportBuffer[0] = mmKey;
-        mmKey = 0;
-    } else
-        reportBuffer[0] = 0;
-
-    reportBuffer[1] = key;
+    reportBuffer[0] = mmKey;
+    mmKey = 0;
+    reportBuffer[1] = 0;
 
     PORTB ^= 1 << BIT_LED;
 }
 
 static void evaluateADC(unsigned int value)
 {
-    uchar   digit;
+    uchar   i;
     uchar   v = (value >> 2) & 0xff;
 
-    if (v < 80) {
-        mmKey = KEY_PLAY;
-    } else if (v < 110) {
-        mmKey = KEY_FORWARD;
-    } else if (v < 140) {
-        mmKey = KEY_REWIND;
-    } else if (v < 180) {
-        mmKey = KEY_VOLUMEDEC;
-    } else if (v < 210) {
-        mmKey = KEY_VOLUMEINC;
+    for (i = 0; i < NUMKEYS; i++) {
+        if ((keymark[i].low <= v) && (v <= keymark[i].high))
+            mmKey = keymark[i].key;
     }
-
-    nextDigit = &valueBuffer[sizeof(valueBuffer)];
-    *--nextDigit = 0xff;/* terminate with 0xff */
-    *--nextDigit = 0;
-    *--nextDigit = KEY_RETURN;
-    do{
-        digit = value % 10;
-        value /= 10;
-        *--nextDigit = 0;
-        if(digit == 0){
-            *--nextDigit = KEY_0;
-        }else{
-            *--nextDigit = KEY_1 - 1 + digit;
-        }
-    }while(value != 0);
 }
 
 static void adcPoll(void)
@@ -176,7 +158,7 @@ static void adcPoll(void)
 
 static void timerPoll(void)
 {
-static uchar timerCnt;
+    static uchar timerCnt;
 
     if(TIFR & (1 << TOV1)){
         TIFR = (1 << TOV1); /* clear overflow */
@@ -208,7 +190,7 @@ static void adcInit(void)
 
 uchar	usbFunctionSetup(uchar data[8])
 {
-usbRequest_t    *rq = (void *)data;
+    usbRequest_t    *rq = (void *)data;
 
     usbMsgPtr = reportBuffer;
     if((rq->bmRequestType & USBRQ_TYPE_MASK) == USBRQ_TYPE_CLASS){    /* class request type */
@@ -216,16 +198,16 @@ usbRequest_t    *rq = (void *)data;
             /* we only have one report type, so don't look at wValue */
             buildReport();
             return sizeof(reportBuffer);
-        }else if(rq->bRequest == USBRQ_HID_GET_IDLE){
+        } else if(rq->bRequest == USBRQ_HID_GET_IDLE){
             usbMsgPtr = &idleRate;
             return 1;
-        }else if(rq->bRequest == USBRQ_HID_SET_IDLE){
+        } else if(rq->bRequest == USBRQ_HID_SET_IDLE){
             idleRate = rq->wValue.bytes[1];
         }
-    }else{
+    } else {
         /* no vendor specific requests implemented */
     }
-	return 0;
+    return 0;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -245,9 +227,9 @@ usbRequest_t    *rq = (void *)data;
  */
 static void calibrateOscillator(void)
 {
-uchar       step = 128;
-uchar       trialValue = 0, optimumValue;
-int         x, optimumDev, targetValue = (unsigned)(1499 * (double)F_CPU / 10.5e6 + 0.5);
+    uchar       step = 128;
+    uchar       trialValue = 0, optimumValue;
+    int         x, optimumDev, targetValue = (unsigned)(1499 * (double)F_CPU / 10.5e6 + 0.5);
 
     /* do a binary search: */
     do{
@@ -256,16 +238,16 @@ int         x, optimumDev, targetValue = (unsigned)(1499 * (double)F_CPU / 10.5e
         if(x < targetValue)             /* frequency still too low */
             trialValue += step;
         step >>= 1;
-    }while(step > 0);
+    } while (step > 0);
     /* We have a precision of +/- 1 for optimum OSCCAL here */
     /* now do a neighborhood search for optimum value */
     optimumValue = trialValue;
     optimumDev = x; /* this is certainly far away from optimum */
-    for(OSCCAL = trialValue - 1; OSCCAL <= trialValue + 1; OSCCAL++){
+    for (OSCCAL = trialValue - 1; OSCCAL <= trialValue + 1; OSCCAL++){
         x = usbMeasureFrameLength() - targetValue;
-        if(x < 0)
+        if (x < 0)
             x = -x;
-        if(x < optimumDev){
+        if (x < optimumDev){
             optimumDev = x;
             optimumValue = OSCCAL;
         }
@@ -304,12 +286,12 @@ uchar   i;
 uchar   calibrationValue;
 
     calibrationValue = eeprom_read_byte(0); /* calibration value from last time */
-    if(calibrationValue != 0xff){
+    if (calibrationValue != 0xff){
         OSCCAL = calibrationValue;
     }
     odDebugInit();
     usbDeviceDisconnect();
-    for(i=0;i<20;i++){  /* 300 ms disconnect */
+    for (i=0;i<20;i++){  /* 300 ms disconnect */
         _delay_ms(15);
     }
     usbDeviceConnect();
@@ -321,14 +303,12 @@ uchar   calibrationValue;
     DDRB |= _BV(BIT_LED);
 
     sei();
-    for(;;){    /* main event loop */
+    for (;;){    /* main event loop */
         wdt_reset();
         usbPoll();
-        if(usbInterruptIsReady() && nextDigit != NULL){ /* we can send another key */
+        if (usbInterruptIsReady() && mmKey != 0){ /* we can send another key */
             buildReport();
             usbSetInterrupt(reportBuffer, sizeof(reportBuffer));
-            if(*++nextDigit == 0xff)    /* this was terminator character */
-                nextDigit = NULL;
         }
         timerPoll();
         adcPoll();

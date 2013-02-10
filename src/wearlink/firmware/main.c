@@ -131,7 +131,6 @@ const struct keymark keymark[NUMKEYS] = {
 static void buildReport(void)
 {
     reportBuffer[0] = mmKey;
-    mmKey = 0;
     reportBuffer[1] = 0;
 
     PORTB ^= 1 << BIT_LED;
@@ -143,8 +142,10 @@ static void evaluateADC(unsigned int value)
     uchar   v = (value >> 2) & 0xff;
 
     for (i = 0; i < NUMKEYS; i++) {
-        if ((keymark[i].low <= v) && (v <= keymark[i].high))
+        if ((keymark[i].low <= v) && (v <= keymark[i].high)) {
             mmKey = keymark[i].key;
+            break;
+        }
     }
 }
 
@@ -171,8 +172,6 @@ static void timerPoll(void)
     }
 }
 
-/* ------------------------------------------------------------------------- */
-
 static void timerInit(void)
 {
     TCCR1 = 0x0b;           /* select clock: 16.5M/1k -> overflow rate = 16.5M/256k = 62.94 Hz */
@@ -180,28 +179,26 @@ static void timerInit(void)
 
 static void adcInit(void)
 {
-    ADMUX = _BV(MUX1); /* Vref=Vcc, no AREF, no left right adjust, measure ADC2 */
+    ADMUX = _BV(MUX1);              /* Vref=Vcc, no AREF, no left right adjust, measure ADC2 */
     ADCSRA = UTIL_BIN8(1000, 0111); /* enable ADC, not free running, interrupt disable, rate = 1/128 */
 }
-
-/* ------------------------------------------------------------------------- */
-/* ------------------------ interface to USB driver ------------------------ */
-/* ------------------------------------------------------------------------- */
 
 uchar	usbFunctionSetup(uchar data[8])
 {
     usbRequest_t    *rq = (void *)data;
 
     usbMsgPtr = reportBuffer;
-    if((rq->bmRequestType & USBRQ_TYPE_MASK) == USBRQ_TYPE_CLASS){    /* class request type */
-        if(rq->bRequest == USBRQ_HID_GET_REPORT){  /* wValue: ReportType (highbyte), ReportID (lowbyte) */
+    if ((rq->bmRequestType & USBRQ_TYPE_MASK) == USBRQ_TYPE_CLASS) {
+        /* class request type */
+        if (rq->bRequest == USBRQ_HID_GET_REPORT) {
+            /* wValue: ReportType (highbyte), ReportID (lowbyte) */
             /* we only have one report type, so don't look at wValue */
             buildReport();
             return sizeof(reportBuffer);
-        } else if(rq->bRequest == USBRQ_HID_GET_IDLE){
+        } else if (rq->bRequest == USBRQ_HID_GET_IDLE) {
             usbMsgPtr = &idleRate;
             return 1;
-        } else if(rq->bRequest == USBRQ_HID_SET_IDLE){
+        } else if (rq->bRequest == USBRQ_HID_SET_IDLE) {
             idleRate = rq->wValue.bytes[1];
         }
     } else {
@@ -209,10 +206,6 @@ uchar	usbFunctionSetup(uchar data[8])
     }
     return 0;
 }
-
-/* ------------------------------------------------------------------------- */
-/* ------------------------ Oscillator Calibration ------------------------- */
-/* ------------------------------------------------------------------------- */
 
 /* Calibrate the RC oscillator to 8.25 MHz. The core clock of 16.5 MHz is
  * derived from the 66 MHz peripheral clock by dividing. Our timing reference
@@ -254,16 +247,6 @@ static void calibrateOscillator(void)
     }
     OSCCAL = optimumValue;
 }
-/*
-Note: This calibration algorithm may try OSCCAL values of up to 192 even if
-the optimum value is far below 192. It may therefore exceed the allowed clock
-frequency of the CPU in low voltage designs!
-You may replace this search algorithm with any other algorithm you like if
-you have additional constraints such as a maximum CPU clock.
-For version 5.x RC oscillators (those with a split range of 2x128 steps, e.g.
-ATTiny25, ATTiny45, ATTiny85), it may be useful to search for the optimum in
-both regions.
-*/
 
 void    usbEventResetReady(void)
 {
@@ -276,14 +259,11 @@ void    usbEventResetReady(void)
     eeprom_write_byte(0, OSCCAL);   /* store the calibrated value in EEPROM */
 }
 
-/* ------------------------------------------------------------------------- */
-/* --------------------------------- main ---------------------------------- */
-/* ------------------------------------------------------------------------- */
-
 int main(void)
 {
-uchar   i;
-uchar   calibrationValue;
+    uchar   i;
+    uchar   sendClear = 0;
+    uchar   calibrationValue;
 
     calibrationValue = eeprom_read_byte(0); /* calibration value from last time */
     if (calibrationValue != 0xff){
@@ -291,9 +271,11 @@ uchar   calibrationValue;
     }
     odDebugInit();
     usbDeviceDisconnect();
-    for (i=0;i<20;i++){  /* 300 ms disconnect */
+
+    for (i = 0;i < 20; i++){  /* 300 ms disconnect */
         _delay_ms(15);
     }
+
     usbDeviceConnect();
     wdt_enable(WDTO_1S);
     timerInit();
@@ -306,9 +288,15 @@ uchar   calibrationValue;
     for (;;){    /* main event loop */
         wdt_reset();
         usbPoll();
-        if (usbInterruptIsReady() && mmKey != 0){ /* we can send another key */
-            buildReport();
-            usbSetInterrupt(reportBuffer, sizeof(reportBuffer));
+
+        /* First round will fire for an mmKey, and second round for a sendClear */
+        if (usbInterruptIsReady()) {
+            if (mmKey || sendClear) {
+                buildReport();
+                mmKey = 0;
+                sendClear ^= 1;
+                usbSetInterrupt(reportBuffer, sizeof(reportBuffer));
+            }
         }
         timerPoll();
         adcPoll();

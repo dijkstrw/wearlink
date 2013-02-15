@@ -22,11 +22,11 @@ numslots	0
 
 [pins]
 # pinnr	seq	type	style	position	net	label
-4		pwr	line	l		GND
 8		pwr	line	l		VCC
 1		io	line	r		PB5 (RESET/DW)
 3		io	line	r		PB4 (PCINT4/ADC2)
 2		io	line	r		PB3
 7		io	line	r		PB2 (SCK/INT0)
 6		io	line	r		PB1 (MISO)
+4		pwr	line	l		GND
 5		io	line	r		PB0 (MOSI)

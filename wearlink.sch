@@ -3,9 +3,7 @@ C 40000 40000 0 0 0 title-B.sym
 C 52000 45300 1 180 0 usbminib-1_local.sym
 {
 T 51850 45550 5 10 1 1 180 4 1
-refdes=CONN2
-T 51750 43450 5 10 1 1 180 4 1
-device=USB
+refdes=USB
 T 51600 32650 5 10 0 0 180 0 1
 footprint=JUMPER4
 }
@@ -175,7 +173,7 @@ C 46500 46900 1 90 0 header2-1_local.sym
 T 46250 47900 5 10 0 0 90 0 1
 device=HEADER2
 T 45600 47400 5 10 1 1 180 1 1
-refdes=CONN1
+refdes=FBTRNIC
 T 46500 46900 5 10 0 1 0 0 1
 footprint=Lumberg1501-05-nocollar
 }
@@ -253,11 +251,9 @@ C 45700 40700 1 0 0 header6-2_local.sym
 T 45700 42700 5 10 1 1 0 0 1
 device=ISP
 T 46400 42900 5 10 1 1 0 4 1
-refdes=CONN3
+refdes=ISP
 T 45700 40700 5 10 0 0 0 0 1
 footprint=TC2030-NL
-T 46400 41300 5 10 1 1 0 4 1
-device=ISP
 }
 N 45200 45100 45200 42500 4
 N 44600 46300 47200 46300 4

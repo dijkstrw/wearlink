@@ -6,7 +6,7 @@ FileVersion[20091103]
 PCB["wearlink" 50.0000mm 50.0000mm]
 
 Grid[539.370079 0.0000 0.0000 1]
-Cursor[0.0000 0.0000 0.000000]
+Cursor[26.1670mm 0.0000 0.000000]
 PolyArea[200000000.000000]
 Thermal[0.500000]
 DRC[10.00mil 10.00mil 8.00mil 10.00mil 12.00mil 8.00mil]
@@ -855,7 +855,7 @@ Element["" "JUMPER4" "USB" "unknown" 28.4750mm 9.2700mm -4.3600mm -0.5700mm 0 10
 
 	)
 
-Element["onsolder" "SOD110" "Z1" "3V6" 24.8750mm 6.7300mm -3.7964mm 0.5862mm 0 100 "selected,auto"]
+Element["onsolder" "SOD110" "Z1" "3V6" 24.8750mm 6.7300mm -3.7964mm 0.5862mm 0 100 "auto"]
 (
 	Pad[29.00mil -15.00mil 29.00mil 15.00mil 46.00mil 20.00mil 52.00mil "1" "1" "onsolder,square"]
 	Pad[-29.00mil -15.00mil -29.00mil 15.00mil 46.00mil 20.00mil 52.00mil "2" "2" "onsolder,square"]
@@ -934,6 +934,13 @@ Element["onsolder" "CAPC2012M" "C2" "10u" 14.2750mm 2.6800mm -0.6980mm 3.6190mm 
 (
 	Pad[-1.97mil 39.37mil 1.97mil 39.37mil 59.05mil 20.00mil 65.05mil "1" "1" "onsolder,square"]
 	Pad[-1.97mil -39.37mil 1.97mil -39.37mil 59.05mil 20.00mil 65.05mil "2" "2" "onsolder,square"]
+
+	)
+
+Element["" "M2" "" "" 31.4750mm 5.4600mm -0.2740mm -1.3700mm 0 100 ""]
+(
+	Pin[0.0000 0.0000 0.0000 0.0000 0.0000 2.0000mm "" "1" "hole"]
+	ElementArc [0.0000 0.0000 1.0500mm 1.0500mm 0 360 10.00mil]
 
 	)
 Layer(1 "top")
@@ -1055,12 +1062,17 @@ Layer(5 "silk")
 	Line[0.0000 50.0000mm 50.0000mm 50.0000mm 10.00mil 20.00mil "clearline,lock"]
 	Line[50.0000mm 50.0000mm 50.0000mm 0.0000 10.00mil 20.00mil "clearline,lock"]
 	Line[0.0750mm 10.8800mm 0.0750mm 0.0700mm 10.00mil 20.00mil "clearline"]
+	Line[30.0700mm 0.0700mm 33.5650mm 0.0700mm 10.00mil 20.00mil "clearline"]
+	Line[0.0750mm 10.8800mm 33.5650mm 10.8800mm 10.00mil 20.00mil "clearline"]
+	Line[33.5650mm 10.8800mm 33.5650mm 0.0700mm 10.00mil 20.00mil "clearline"]
 	Line[0.0750mm 0.0700mm 30.0750mm 0.0700mm 10.00mil 20.00mil "clearline"]
-	Line[30.0750mm 0.0700mm 30.0750mm 10.8800mm 10.00mil 20.00mil "clearline"]
-	Line[30.0750mm 10.8800mm 0.0750mm 10.8800mm 10.00mil 20.00mil "clearline"]
 	Text[0.8851mm 10.6921mm 0 166 "WearLink" "clearline,onsolder"]
 	Text[22.5886mm 2.1327mm 0 76 "2013-02" "clearline,onsolder"]
 	Text[22.9996mm 9.9417mm 0 76 "Rev. A" "clearline,onsolder"]
+	Text[30.6880mm 2.3290mm 0 78 "GND" "clearline,onsolder"]
+	Text[31.2360mm 9.8640mm 0 78 "5V" "clearline,onsolder"]
+	Text[30.2770mm 7.8090mm 0 78 "D- (W)" "clearline,onsolder"]
+	Text[30.2770mm 4.2470mm 0 78 "D+ (G)" "clearline,onsolder"]
 	Polygon("clearpoly,auto")
 	(
 		[4.3528mm 2.9677mm] [4.0619mm 2.8740mm] [3.8966mm 2.5448mm] [3.6416mm 1.7607mm] [3.1978mm 0.2903mm] 
@@ -1095,11 +1107,11 @@ Layer(6 "silk")
 (
 	Line[50.0000mm 50.0000mm 0.0000 50.0000mm 10.00mil 20.00mil "clearline,lock"]
 	Line[1970.00mil 1970.00mil 1970.00mil 0.0000 10.00mil 20.00mil "clearline"]
-	Line[30.0750mm 0.0800mm 30.0750mm 10.8800mm 10.00mil 20.00mil "clearline"]
-	Line[30.0750mm 10.8800mm 0.0750mm 10.8800mm 10.00mil 20.00mil "clearline"]
 	Line[0.0750mm 10.8800mm 0.0750mm 0.0800mm 10.00mil 20.00mil "clearline"]
 	Line[0.0750mm 0.0700mm 0.0850mm 0.0800mm 10.00mil 20.00mil "clearline"]
-	Line[0.0850mm 0.0800mm 30.0750mm 0.0800mm 10.00mil 20.00mil "clearline"]
+	Line[0.0750mm 10.8800mm 33.5650mm 10.8800mm 10.00mil 20.00mil "clearline"]
+	Line[0.0850mm 0.0800mm 33.5650mm 0.0800mm 10.00mil 20.00mil "clearline"]
+	Line[33.5650mm 0.0800mm 33.5650mm 10.8800mm 10.00mil 20.00mil "clearline"]
 )
 NetList()
 (

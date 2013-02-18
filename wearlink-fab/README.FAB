@@ -1,0 +1,15 @@
+Greetings fabricator!
+
+Board gerbers are named as you specified, with the exception of the NC drill
+files. There are 2:
+
+- wearlink.plated-drill.TXT    - the plated holes in the design
+- wearlink.unplated-drill.TXT  - the unplated holes in the design
+
+Do not hesitate to contact me for any questions about this design. Previously
+you were able to process plated/unplated holes in this fashion, again please
+contact me if this has changed.
+
+Many thanks!
+
+Willem Dijkstra <wpd@xs4all.nl>

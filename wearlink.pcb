@@ -3,10 +3,10 @@
 # To read pcb files, the pcb version (or the git source date) must be >= the file version
 FileVersion[20091103]
 
-PCB["wearlink" 50.0000mm 50.0000mm]
+PCB["wearlink" 33.6900mm 11.0100mm]
 
-Grid[539.370079 0.0000 0.0000 1]
-Cursor[26.1670mm 0.0000 0.000000]
+Grid[39.370079 0.0000 0.0000 1]
+Cursor[2.3800mm 0.3200mm 0.000000]
 PolyArea[200000000.000000]
 Thermal[0.500000]
 DRC[10.00mil 10.00mil 8.00mil 10.00mil 12.00mil 8.00mil]
@@ -787,7 +787,7 @@ Symbol['~' 12.00mil]
 	SymbolLine[20.00mil 35.00mil 25.00mil 30.00mil 8.00mil]
 )
 Attribute("PCB::grid::unit" "mm")
-Attribute("PCB::grid::size" "0.1370mm")
+Attribute("PCB::grid::size" "0.0100mm")
 Via[11.8750mm 2.2800mm 36.00mil 20.00mil 0.0000 20.00mil "" ""]
 Via[16.4750mm 1.4800mm 36.00mil 20.00mil 0.0000 20.00mil "" "thermal(2X)"]
 Via[16.4750mm 2.8800mm 36.00mil 20.00mil 0.0000 20.00mil "" ""]
@@ -1059,8 +1059,6 @@ Layer(4 "bottom-gnd")
 )
 Layer(5 "silk")
 (
-	Line[0.0000 50.0000mm 50.0000mm 50.0000mm 10.00mil 20.00mil "clearline,lock"]
-	Line[50.0000mm 50.0000mm 50.0000mm 0.0000 10.00mil 20.00mil "clearline,lock"]
 	Line[0.0750mm 10.8800mm 0.0750mm 0.0700mm 10.00mil 20.00mil "clearline"]
 	Line[30.0700mm 0.0700mm 33.5650mm 0.0700mm 10.00mil 20.00mil "clearline"]
 	Line[0.0750mm 10.8800mm 33.5650mm 10.8800mm 10.00mil 20.00mil "clearline"]
@@ -1105,8 +1103,6 @@ Layer(5 "silk")
 )
 Layer(6 "silk")
 (
-	Line[50.0000mm 50.0000mm 0.0000 50.0000mm 10.00mil 20.00mil "clearline,lock"]
-	Line[1970.00mil 1970.00mil 1970.00mil 0.0000 10.00mil 20.00mil "clearline"]
 	Line[0.0750mm 10.8800mm 0.0750mm 0.0800mm 10.00mil 20.00mil "clearline"]
 	Line[0.0750mm 0.0700mm 0.0850mm 0.0800mm 10.00mil 20.00mil "clearline"]
 	Line[0.0750mm 10.8800mm 33.5650mm 10.8800mm 10.00mil 20.00mil "clearline"]

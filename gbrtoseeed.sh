@@ -18,3 +18,8 @@ for i in *.gbr; do
         mv $i $name.$t
     fi
 done
+
+for i in *.cnc; do
+    name=${i/.cnc}
+    mv ${i} ${name}.TXT
+done

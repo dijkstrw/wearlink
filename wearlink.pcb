@@ -6,7 +6,7 @@ FileVersion[20091103]
 PCB["wearlink" 33.6900mm 11.0100mm]
 
 Grid[39.370079 0.0000 0.0000 1]
-Cursor[2.3800mm 0.3200mm 0.000000]
+Cursor[3.0400mm 0.0000 0.000000]
 PolyArea[200000000.000000]
 Thermal[0.500000]
 DRC[10.00mil 10.00mil 8.00mil 10.00mil 12.00mil 8.00mil]
@@ -789,7 +789,7 @@ Symbol['~' 12.00mil]
 Attribute("PCB::grid::unit" "mm")
 Attribute("PCB::grid::size" "0.0100mm")
 Via[11.8750mm 2.2800mm 36.00mil 20.00mil 0.0000 20.00mil "" ""]
-Via[16.4750mm 1.4800mm 36.00mil 20.00mil 0.0000 20.00mil "" "thermal(2X)"]
+Via[16.4750mm 1.4800mm 36.00mil 0.6080mm 0.0000 20.00mil "" "thermal(2X)"]
 Via[16.4750mm 2.8800mm 36.00mil 20.00mil 0.0000 20.00mil "" ""]
 Via[16.4750mm 9.8800mm 36.00mil 20.00mil 0.0000 20.00mil "" "thermal(2X,3X)"]
 Via[11.8860mm 7.4460mm 36.00mil 20.00mil 0.0000 20.00mil "" ""]
@@ -873,11 +873,11 @@ Element["" "TC2030-NL" "ISP" "unknown" 13.9350mm 5.5750mm -1.9500mm 3.1500mm 0 1
 	Pin[0.0000 100.00mil 43.00mil 20.00mil 0.0000 39.00mil "" "" "hole,edge2"]
 	Pin[200.00mil 60.00mil 43.00mil 20.00mil 0.0000 39.00mil "" "" "hole,edge2"]
 	Pin[200.00mil 140.00mil 43.00mil 20.00mil 0.0000 39.00mil "" "" "hole,edge2"]
-	Pad[50.00mil 125.00mil 50.00mil 125.00mil 31.00mil 20.00mil 0.0000 "1" "1" ""]
+	Pad[50.00mil 125.00mil 50.00mil 125.00mil 31.00mil 0.6580mm 0.0000 "1" "1" ""]
 	Pad[50.00mil 75.00mil 50.00mil 75.00mil 31.00mil 20.00mil 0.0000 "2" "2" ""]
-	Pad[100.00mil 125.00mil 100.00mil 125.00mil 31.00mil 20.00mil 0.0000 "3" "3" ""]
+	Pad[100.00mil 125.00mil 100.00mil 125.00mil 31.00mil 0.6080mm 0.0000 "3" "3" "selected"]
 	Pad[100.00mil 75.00mil 100.00mil 75.00mil 31.00mil 20.00mil 0.0000 "4" "4" ""]
-	Pad[150.00mil 125.00mil 150.00mil 125.00mil 31.00mil 20.00mil 0.0000 "5" "5" "edge2"]
+	Pad[150.00mil 125.00mil 150.00mil 125.00mil 31.00mil 0.6580mm 0.0000 "5" "5" "edge2"]
 	Pad[150.00mil 75.00mil 150.00mil 75.00mil 31.00mil 20.00mil 0.0000 "6" "6" "edge2"]
 
 	)
@@ -892,25 +892,6 @@ Element["onsolder" "SOD110" "Z2" "3V6" 24.8750mm 4.1900mm -3.7714mm 0.6022mm 0 1
 	ElementLine [-63.00mil -49.00mil -63.00mil 49.00mil 10.00mil]
 	ElementLine [-63.00mil -49.00mil 50.00mil -49.00mil 10.00mil]
 	ElementLine [50.00mil -49.00mil 73.00mil -38.00mil 10.00mil]
-
-	)
-
-Element["" "SO8" "U1" "unknown" 16.4750mm 2.8800mm -0.2257mm -0.2362mm 0 100 ""]
-(
-	Pad[-135.00mil -75.00mil -70.00mil -75.00mil 20.00mil 10.00mil 30.00mil "(RESET/DW) PB5" "1" "square"]
-	Pad[-135.00mil -25.00mil -70.00mil -25.00mil 20.00mil 10.00mil 30.00mil "PB3" "2" "square"]
-	Pad[-135.00mil 25.00mil -70.00mil 25.00mil 20.00mil 10.00mil 30.00mil "(PCINT4/ADC2) PB4" "3" "square"]
-	Pad[-135.00mil 75.00mil -70.00mil 75.00mil 20.00mil 10.00mil 30.00mil "GND" "4" "square"]
-	Pad[70.00mil 75.00mil 135.00mil 75.00mil 20.00mil 10.00mil 30.00mil "(MOSI) PB0" "5" "square,edge2"]
-	Pad[70.00mil 25.00mil 135.00mil 25.00mil 20.00mil 10.00mil 30.00mil "(MISO) PB1" "6" "square,edge2"]
-	Pad[70.00mil -25.00mil 135.00mil -25.00mil 20.00mil 10.00mil 30.00mil "(SCK/INT0) PB2" "7" "square,edge2"]
-	Pad[70.00mil -75.00mil 135.00mil -75.00mil 20.00mil 10.00mil 30.00mil "VCC" "8" "square,edge2"]
-	ElementLine [-155.00mil -95.00mil -155.00mil 95.00mil 10.00mil]
-	ElementLine [-155.00mil 95.00mil 155.00mil 95.00mil 10.00mil]
-	ElementLine [155.00mil -95.00mil 155.00mil 95.00mil 10.00mil]
-	ElementLine [-155.00mil -95.00mil -25.00mil -95.00mil 10.00mil]
-	ElementLine [25.00mil -95.00mil 155.00mil -95.00mil 10.00mil]
-	ElementArc [0.0000 -95.00mil 25.00mil 25.00mil 0 180 10.00mil]
 
 	)
 
@@ -941,6 +922,25 @@ Element["" "M2" "" "" 31.4750mm 5.4600mm -0.2740mm -1.3700mm 0 100 ""]
 (
 	Pin[0.0000 0.0000 0.0000 0.0000 0.0000 2.0000mm "" "1" "hole"]
 	ElementArc [0.0000 0.0000 1.0500mm 1.0500mm 0 360 10.00mil]
+
+	)
+
+Element["" "SO8" "U1" "unknown" 16.4750mm 2.8800mm -0.2257mm -0.2362mm 0 100 ""]
+(
+	Pad[-135.00mil -75.00mil -70.00mil -75.00mil 20.00mil 10.00mil 30.00mil "(RESET/DW) PB5" "1" "square"]
+	Pad[-135.00mil -25.00mil -70.00mil -25.00mil 20.00mil 10.00mil 30.00mil "PB3" "2" "square"]
+	Pad[-135.00mil 25.00mil -70.00mil 25.00mil 20.00mil 10.00mil 30.00mil "(PCINT4/ADC2) PB4" "3" "square"]
+	Pad[-135.00mil 75.00mil -70.00mil 75.00mil 20.00mil 10.00mil 30.00mil "GND" "4" "square"]
+	Pad[70.00mil 75.00mil 135.00mil 75.00mil 20.00mil 10.00mil 30.00mil "(MOSI) PB0" "5" "square,edge2"]
+	Pad[70.00mil 25.00mil 135.00mil 25.00mil 20.00mil 10.00mil 30.00mil "(MISO) PB1" "6" "square,edge2"]
+	Pad[70.00mil -25.00mil 135.00mil -25.00mil 20.00mil 10.00mil 30.00mil "(SCK/INT0) PB2" "7" "square,edge2"]
+	Pad[70.00mil -75.00mil 135.00mil -75.00mil 20.00mil 10.00mil 30.00mil "VCC" "8" "square,edge2"]
+	ElementLine [-155.00mil -95.00mil -155.00mil 95.00mil 10.00mil]
+	ElementLine [-155.00mil 95.00mil 155.00mil 95.00mil 10.00mil]
+	ElementLine [155.00mil -95.00mil 155.00mil 95.00mil 10.00mil]
+	ElementLine [-155.00mil -95.00mil -25.00mil -95.00mil 10.00mil]
+	ElementLine [25.00mil -95.00mil 155.00mil -95.00mil 10.00mil]
+	ElementArc [0.0000 -95.00mil 25.00mil 25.00mil 0 180 10.00mil]
 
 	)
 Layer(1 "top")
@@ -1020,7 +1020,7 @@ Layer(2 "top-vcc")
 	)
 	Polygon("")
 	(
-		[17.3470mm 2.2390mm] [15.5690mm 2.2390mm] [15.5690mm 0.0800mm] [17.3470mm 0.0800mm] 
+		[15.3000mm 0.0000] [17.6000mm 0.0000] [17.6000mm 2.1000mm] [15.3000mm 2.1000mm] 
 	)
 )
 Layer(3 "bottom")
@@ -1048,13 +1048,13 @@ Layer(4 "bottom-gnd")
 	(
 		[30.0750mm 10.8800mm] [26.4412mm 10.8800mm] [26.4412mm 0.0800mm] [30.0750mm 0.0800mm] 
 	)
-	Polygon("")
-	(
-		[15.4750mm 4.3870mm] [17.4750mm 4.3870mm] [17.4750mm 2.1870mm] [15.4750mm 2.1870mm] 
-	)
 	Polygon("clearpoly")
 	(
 		[30.0750mm 0.0800mm] [0.0750mm 0.0800mm] [0.0750mm 10.8800mm] [30.0750mm 10.8800mm] 
+	)
+	Polygon("")
+	(
+		[15.4750mm 4.4070mm] [17.4750mm 4.4070mm] [17.4750mm 2.2070mm] [15.4750mm 2.2070mm] 
 	)
 )
 Layer(5 "silk")

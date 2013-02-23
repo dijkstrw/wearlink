@@ -249,6 +249,10 @@ int main(void)
 
     usbDeviceConnect();
     wdt_enable(WDTO_1S);
+
+    /* Reduce power by disabling unused subsystems: */
+    PRR = _BV(PRTIM0) | _BV(PRUSI);
+
     timerInit();
     adcInit();
     usbInit();

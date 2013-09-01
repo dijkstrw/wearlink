@@ -24,7 +24,7 @@
  * PB0, PB2 = USB data lines
 */
 
-static uchar    reportBuffer[2];    /* buffer for HID reports */
+static uchar    reportBuffer[1];    /* buffer for HID reports */
 static uchar    idleRate;           /* in 4 ms units */
 static uchar    adcPending;
 static uchar    mmKey;
@@ -42,20 +42,6 @@ const PROGMEM char usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] 
     0x19, 0x00,                    //   USAGE_MINIMUM (0)
     0x29, 0xff,                    //   USAGE_MAXIMUM (0xff)
     0x81, 0x00,                    //   INPUT (Data, Array); Media Keys
-
-    /* Add dummy empty byte to ensure that our multimedia key is sent to the
-     * active application instead of the main system. Without this extra empty
-     * key press, my phone start the general multimedia application instead of
-     * allowing me to control the active application on the screen. */
-
-    0x95, 0x01,                    //   REPORT_COUNT(1)
-    0x75, 0x08,                    //   REPORT_SIZE(8)
-    0x15, 0x00,                    //   LOGICAL_MINIMUM(0)
-    0x25, 0x65,                    //   LOGICAL_MAXIMUM(101)
-    0x05, 0x07,                    //   USAGE_PAGE (Keyboard)
-    0x19, 0x00,                    //   USAGE_MINIMUM (0)
-    0x29, 0x65,                    //   USAGE_MAXIMUM (101)
-    0x81, 0x00,                    //   INPUT (Data, Array) normal keys
 
     0xc0                           // END_COLLECTION
 };
@@ -117,7 +103,6 @@ const struct keymark keymark[NUMKEYS] = {
 static void buildReport(void)
 {
     reportBuffer[0] = mmKey;
-    reportBuffer[1] = 0;
 }
 
 static void evaluateADC(unsigned int value)
@@ -264,9 +249,6 @@ int main(void)
 
     usbDeviceConnect();
     wdt_enable(WDTO_1S);
-
-    /* Reduce power by disabling unused subsystems: */
-    PRR = _BV(PRTIM0) | _BV(PRUSI);
 
     timerInit();
     adcInit();

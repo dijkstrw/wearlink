@@ -1,6 +1,6 @@
 Introduction
 ------------
-When looking for a new winter coat I stumbled on a Taiwanese manufacturer
+While looking for a new winter coat I stumbled on a Taiwanese manufacturer
 selling a black and blue winter coat with keys on the sleeve. The coat and keys:
 
 .. image:: .static/tittallon_09B573.jpg
@@ -75,8 +75,6 @@ Back of the pcb:
    :scale: 50%
 
 Note that a TagConnect header is used for ISP.
-
-Main source file:
 
 Main source file
 ~~~~~~~~~~~~~~~~

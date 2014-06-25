@@ -16,6 +16,11 @@ I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) source
 
 .PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest gettext
 
+all:	download singlehtml
+	rm $(BUILDDIR)/singlehtml/.buildinfo
+	rm $(BUILDDIR)/singlehtml/objects.inv
+
+
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
 	@echo "  html       to make standalone HTML files"
@@ -151,3 +156,11 @@ doctest:
 	$(SPHINXBUILD) -b doctest $(ALLSPHINXOPTS) $(BUILDDIR)/doctest
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
+
+download:
+	mkdir -p $(BUILDDIR)/wearlink-1.0
+	tar -cf- ../layout | (cd $(BUILDDIR)/wearlink-1.0; tar -xf -)
+	tar -cf- ../schematic | (cd $(BUILDDIR)/wearlink-1.0; tar -xf -)
+	tar -cf- ../src | (cd $(BUILDDIR)/wearlink-1.0; tar -xf -)
+	tar -czvf $(BUILDDIR)/wearlink-1.0.tar.gz -C $(BUILDDIR) wearlink-1.0
+	cp $(BUILDDIR)/wearlink-1.0.tar.gz $(BUILDDIR)/../source/

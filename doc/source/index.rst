@@ -1,22 +1,18 @@
-Wearlink
-========
-
 Introduction
 ------------
 When looking for a new winter coat I stumbled on a Taiwanese manufacturer
-selling a black and blue winter coat with keys on the sleeve. The sleeve keys:
+selling a black and blue winter coat with keys on the sleeve. The coat and keys:
 
-.. image:: sleevekeys.png
+.. image:: .static/tittallon_09B573.jpg
    :align: center
 
 The keys legend betray their intended purpose: volume control, play/pause and
 forward/reverse. I listen to podcasts on my phone in the car and on the bike,
 and this would make a great way to control those even when wearing gloves!
 
-It turned out that the key legend is printed on the outside of the sleeve,
-while the real keypad is glued to the inside of the sleeve, just under the
-outer coat layers. A ruggedized two-wire cable connected the keypad to a 2.5mm
-TRS in the left chest pocket.
+It turns out that the real keypad is glued to the inside of the sleeve, just
+under the outer coat layers. A ruggedized two-wire cable connected the keypad
+to a 2.5mm TRS in the left chest pocket.
 
 The keypad is manufactured by `FibreTronic <http://fibretronic.com>`_ under the
 moniker connectedwear. They sell a range of keypads (my coat has the `KP2-5SH
@@ -42,31 +38,65 @@ While looking around for good donor projects I stumbled on the `EasyLogger
 8-pin ATTiny45 with just a few passives to emulate an usb keyboard that reports
 back values read by the micro's ADC.
 
-The EasyLoggers code was modified to emit multimedia keys, the ADC was
-connected to the coat keys and that was pretty much it.
+So after:
 
-Adjusted schematic:
+* Modifying the code to emit multimedia keys
+* Connecting the ADC to the coat keys using a 2.5mm trs jack
+* Connecting the ATTiny to the phone using a ghetto 4 wire to usb plug
 
+I can now control music on my phone using the keys on my coat. Hooray!
+
+
+Schematic
+~~~~~~~~~
 .. image:: .static/wearlink-schematic.png
    :align: center
-   :target: .static/wearlink-schematic-large.png
+   :target: _static/wearlink-schematic-large.png
 
-Front and back of the pcb:
+Printed Circuit Board
+~~~~~~~~~~~~~~~~~~~~~
+.. image:: .static/wearlink-pcb.png
+   :align: center
+   :width: 50%
+   :scale: 50%
+
+Front of the pcb:
 
 .. image:: .static/wearlink-top.png
+   :align: center
    :width: 50%
    :scale: 50%
+
+Back of the pcb:
 
 .. image:: .static/wearlink-bottom.png
+   :align: center
    :width: 50%
    :scale: 50%
 
-Download:
+Note that a TagConnect header is used for ISP.
 
-* source: an avr-gcc project, targetting the ATTiny85 including the 
-  `Virtual USB port of AVR microcontrollers <http://www.obdev.at/products/vusb/index.html>`_ driver.
-* schematic: a GEDA/gschem schematic, including a GEDA/pcb layout on a 34x11mm
-  board.
+Main source file:
+
+Main source file
+~~~~~~~~~~~~~~~~
+During development I looked around for good information about how to emit multimedia keys. In case I ever forget:
+
+.. literalinclude:: ../../src/firmware/main.c
+   :language: c
+
+Download
+--------
+:download:`wearlink-1.0.tar.gz <wearlink-1.0.tar.gz>`
+
+This contains the directories:
+
+* src: an avr-gcc project, targetting the ATTiny85 including the `Virtual USB port of
+  AVR microcontrollers <http://www.obdev.at/products/vusb/index.html>`_ driver.
+
+* schematic: a GEDA/gschem schematic
+
+* layout: a GEDA/pcb layout for a 34x11mm board.
 
 Notes for next time
 -------------------

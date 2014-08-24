@@ -7,8 +7,9 @@ selling a black and blue winter coat with keys on the sleeve. The coat and keys:
    :align: center
 
 The keys legend betray their intended purpose: volume control, play/pause and
-forward/reverse. I listen to podcasts on my phone in the car and on the bike,
-and this would make a great way to control those even when wearing gloves!
+forward/reverse. I listen to podcasts on my android phone in the car and on the
+bike, and this would make a great way to control those even when wearing
+gloves!
 
 It turns out that the real keypad is glued to the inside of the sleeve, just
 under the outer coat layers. A ruggedized two-wire cable connected the keypad
